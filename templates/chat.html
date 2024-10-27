@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Chatbot</title>
+    <script>
+        async function sendMessage() {
+            const userInput = document.getElementById("userInput").value;
+            const responseDiv = document.getElementById("response");
+
+            // Відправка повідомлення до API
+            const response = await fetch("/chat", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ message: userInput })
+            });
+
+            const data = await response.json();
+
+            // Відображення повідомлення
+            responseDiv.innerHTML += `<p><strong>You:</strong> ${userInput}</p>`;
+            responseDiv.innerHTML += `<p><strong>Bot:</strong> ${data.response}</p>`;
+            document.getElementById("userInput").value = "";
+            responseDiv.scrollTop = responseDiv.scrollHeight;
+        }
+    </script>
+</head>
+<body>
+    <h1>Chat with our Bot</h1>
+    <div id="response" style="border: 1px solid #ddd; padding: 10px; max-height: 300px; overflow-y: auto;">
+    </div>
+    <input type="text" id="userInput" placeholder="Type your message..." onkeydown="if(event.key === 'Enter') sendMessage()">
+    <button onclick="sendMessage()">Send</button>
+</body>
+</html>
